@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	OptionParametersTest.class,
-	BlackScholesOptionPricerTest.class
+	BlackScholesOptionPricerTest.class,
+	OptionParametersGeneratorTest.class
 })
 public class AllTests {
 
