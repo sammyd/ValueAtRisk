@@ -1,35 +1,25 @@
 package com.sammyd.valueatrisk;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 public class BlackScholesOptionPricer implements OptionPricer {
 
 	/**
-	 *  Option parameters
-	 */
-	private final OptionParameters initialParameters;
-	private OptionParameters parameters;
-	
-	/**
-	 * A normal distribution
+	 * A normal distribution. We'll reuse this across different calculations.
 	 */
 	private NormalDistribution normalDistribution = new NormalDistribution(0, 1);
-	
-	/**
-	 * @param parameters The pricing parameters
-	 */
-	public BlackScholesOptionPricer(final OptionParameters p) {
-		super();
-		this.initialParameters = p;
-		this.setParameters(new OptionParameters(p));
-	}
 
-	/** OptionPricer methods */
+	/**
+	 * OptionPricer interface methods
+	 */
 	@Override
-	public double calculatePrice() {
+	public double calculatePrice(OptionParameters parameters) {
+		Validate.notNull(parameters);
+		
 		final double s0 = parameters.getSpotPrice();
-		final double d1 = this.d1(s0);
-		final double d2 = this.d2(d1);
+		final double d1 = this.d1(parameters);
+		final double d2 = this.d2(parameters, d1);
 		
 		double price = s0 * normalDistribution.cumulativeProbability(d1);
 		price -= normalDistribution.cumulativeProbability(d2) * parameters.getStrikePrice()
@@ -38,29 +28,27 @@ public class BlackScholesOptionPricer implements OptionPricer {
 		return price;
 	}
 	
-	private double d1(double spotPrice) {
-		double retVal = Math.log(spotPrice / parameters.getStrikePrice());
+	/**
+	 * Part of the BS calculation
+	 * @param parameters The parameters for this calculation
+	 * @return The d1 part of the Black-Scholes formula
+	 */
+	private double d1(OptionParameters parameters) {
+		double retVal = Math.log(parameters.getSpotPrice() / parameters.getStrikePrice());
 		retVal += (parameters.getInterestRate() - parameters.getVolatility() / 2.f)
 				* parameters.getTimeToMaturity();
 		retVal /= parameters.getVolatility() * parameters.getTimeToMaturity();
 		return retVal;
 	}
 	
-	private double d2(double d1) {
+	/**
+	 * Part of the BS calculation
+	 * @param parameters The parameters for this calculation
+	 * @param d1 The d1 part of the Black-Scholes formula
+	 * @return The d2 part of the Black-Scholes formula
+	 */
+	private double d2(OptionParameters parameters, double d1) {
 		return (d1 - parameters.getVolatility() * Math.sqrt(parameters.getTimeToMaturity()));
-	}
-
-	/** More getters and setters */
-	public OptionParameters getInitialParameters() {
-		return initialParameters;
-	}
-
-	public OptionParameters getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(OptionParameters parameters) {
-		this.parameters = parameters;
 	}
 
 }
