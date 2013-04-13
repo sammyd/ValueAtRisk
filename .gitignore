@@ -1,0 +1,9 @@
+## java specific
+*.class
+
+## Generic Files
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
