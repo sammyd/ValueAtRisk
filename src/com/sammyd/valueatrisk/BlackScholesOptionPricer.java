@@ -3,6 +3,12 @@ package com.sammyd.valueatrisk;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
+/**
+ * This class prices a European call option. I guess it should be renamed.
+ * @author sam
+ *
+ */
+
 public class BlackScholesOptionPricer implements OptionPricer {
 
 	/**
@@ -35,9 +41,9 @@ public class BlackScholesOptionPricer implements OptionPricer {
 	 */
 	private double d1(OptionParameters parameters) {
 		double retVal = Math.log(parameters.getSpotPrice() / parameters.getStrikePrice());
-		retVal += (parameters.getInterestRate() - parameters.getVolatility() / 2.f)
+		retVal += (parameters.getInterestRate() + parameters.getVolatility() * parameters.getVolatility() / 2.f)
 				* parameters.getTimeToMaturity();
-		retVal /= parameters.getVolatility() * parameters.getTimeToMaturity();
+		retVal /= parameters.getVolatility() * Math.sqrt(parameters.getTimeToMaturity());
 		return retVal;
 	}
 	

@@ -15,7 +15,7 @@ public class OptionParametersGeneratorTest {
 	@Before
 	public void setUp() throws Exception {
 		op = new OptionParameters(0.5, 100, 100, 1.05, 0.05);
-		opg = new OptionParametersGenerator(op, 100, 100, 100);
+		opg = new OptionParametersGenerator(op, 0.5, 0.5, 0.5);
 	}
 
 	@After
@@ -35,9 +35,9 @@ public class OptionParametersGeneratorTest {
 	@Test
 	public void test_constructorWithValidParameters_shouldPopulateFieldsCorrectly() {
 		assertSame(opg.getInitialParameters(), op);
-		assertEquals(opg.getImplicitVolatiltyVariance(), 100, 1e-10);
-		assertEquals(opg.getInterestRateVariance(), 100, 1e-10);
-		assertEquals(opg.getUnderlyingHistoricalVariance(), 100, 1e-10);
+		assertEquals(opg.getImplicitVolatiltyVariance(), 0.5, 1e-10);
+		assertEquals(opg.getInterestRateVariance(), 0.5, 1e-10);
+		assertEquals(opg.getUnderlyingHistoricalVariance(), 0.5, 1e-10);
 	}
 	
 	/* getNewRandomOptionParameters Tests */
@@ -64,9 +64,9 @@ public class OptionParametersGeneratorTest {
 		 */
 		
 		OptionParameters perturbed = opg.getNewRandomOptionParameters();
-		assertFalse(perturbed.getInterestRate() - op.getInterestRate() < 1e-10);
-		assertFalse(perturbed.getSpotPrice()    - op.getSpotPrice()    < 1e-10);
-		assertFalse(perturbed.getVolatility()   - op.getVolatility()   < 1e-10);
+		assertFalse(Math.abs(perturbed.getInterestRate() - op.getInterestRate()) < 1e-10);
+		assertFalse(Math.abs(perturbed.getSpotPrice()    - op.getSpotPrice()   ) < 1e-10);
+		assertFalse(Math.abs(perturbed.getVolatility()   - op.getVolatility()  ) < 1e-10);
 	}
 	
 }
